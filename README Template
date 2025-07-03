@@ -1,0 +1,16 @@
+📄 README Template
+# Freelance Finder
+
+A web app to connect freelancers with clients.
+
+## 🌐 Live Demo
+[Coming Soon]
+
+## 🚀 Tech Stack
+- React, Node.js, Express, MongoDB
+- JWT Auth, Socket.io (Chat), Cloudinary (Image Uploads)
+
+## 📦 Features
+- User Auth (Freelancer / Client)
+- Job Posting & Bidding
+- Freelancer
