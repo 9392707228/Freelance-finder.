@@ -1,0 +1,26 @@
+🏁 Getting Started
+Clone & configure:
+
+bash
+Copy
+Edit
+git clone https://github.com/yourname/freelance-finder.git
+cd freelance-finder
+Back End:
+
+bash
+Copy
+Edit
+cd server
+npm install
+echo "MONGO_URI=... JWT_SECRET=..." > .env
+npm run dev
+Front End:
+
+bash
+Copy
+Edit
+cd client
+npm install
+npm start
+
