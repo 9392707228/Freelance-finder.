@@ -1,0 +1,5 @@
+📦 Repository Structure
+freelance-finder/
+├── client/         # React front-end
+└── server/         # Node.js/Express back-end
+
