@@ -1,0 +1,199 @@
+
+
+
+
+
+---
+
+📁 Folder Structure
+
+freelance-finder/
+├── client/              # React Frontend
+└── server/              # Node.js Backend
+
+
+---
+
+🚀 Backend (Node.js + Express) – Key Parts
+
+🔧 1. server/index.js
+
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
+require('dotenv').config();
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.post('/auth/github', async (req, res) => {
+  const { code } = req.body;
+
+  try {
+    // Exchange code for access token
+    const tokenRes = await axios.post(
+      `https://github.com/login/oauth/access_token`,
+      {
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code,
+      },
+      {
+        headers: {
+          accept: 'application/json',
+        },
+      }
+    );
+
+    const accessToken = tokenRes.data.access_token;
+
+    // Fetch user info
+    const userRes = await axios.get(`https://api.github.com/user`, {
+      headers: {
+        Authorization: `token ${accessToken}`,
+      },
+    });
+
+    res.json({ user: userRes.data });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('GitHub OAuth Failed');
+  }
+});
+
+app.listen(5000, () => console.log('Server running on http://localhost:5000'));
+
+
+---
+
+💻 Frontend (React)
+
+🌐 2. client/src/App.js
+
+import React from 'react';
+
+function App() {
+  const handleGitHubLogin = () => {
+    const clientId = 'YOUR_GITHUB_CLIENT_ID';
+    const redirectUri = 'http://localhost:3000/callback';
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}`;
+  };
+
+  return (
+    <div className="p-8 text-center">
+      <h1 className="text-3xl font-bold mb-4">Freelance Finder</h1>
+      <button
+        onClick={handleGitHubLogin}
+        className="bg-black text-white px-4 py-2 rounded"
+      >
+        Login with GitHub
+      </button>
+    </div>
+  );
+}
+
+export default App;
+
+3. client/src/Callback.js
+
+import React, { useEffect } from 'react';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
+
+function Callback() {
+  const { search } = useLocation();
+
+  useEffect(() => {
+    const code = new URLSearchParams(search).get('code');
+
+    if (code) {
+      axios.post('http://localhost:5000/auth/github', { code })
+        .then(res => {
+          console.log('Logged in as:', res.data.user);
+          // Save to localStorage or state
+        })
+        .catch(err => console.error(err));
+    }
+  }, [search]);
+
+  return <div>Logging in...</div>;
+}
+
+export default Callback;
+
+
+---
+
+🧑‍💼 Job Board Models (MongoDB)
+
+Example Schema for Freelancers
+
+const mongoose = require('mongoose');
+
+const FreelancerSchema = new mongoose.Schema({
+  githubUsername: String,
+  githubProfileUrl: String,
+  bio: String,
+  skills: [String],
+  isAvailable: Boolean,
+});
+
+module.exports = mongoose.model('Freelancer', FreelancerSchema);
+
+Example Schema for Jobs
+
+const JobSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  budget: Number,
+  postedBy: String,
+  createdAt: { type: Date, default: Date.now },
+});
+
+module.exports = mongoose.model('Job', JobSchema);
+
+
+---
+
+✅ Features List (MVP)
+
+✅ GitHub OAuth login
+
+✅ View developer GitHub profile
+
+✅ Post and apply for jobs
+
+✅ Search freelancers by skills
+
+✅ Simple chat/messaging
+
+✅ Mark freelancer as “available for hire”
+
+
+
+---
+
+🚀 Future Ideas
+
+⭐ GitHub repo suggestions for freelancers
+
+📈 Skill verification based on GitHub activity (via GitHub API)
+
+📝 Ratings & reviews for freelancers
+
+💬 Real-time chat with Socket.io
+
+
+
+---
+
+📂 GitHub Repo Structure Example
+
+If you're pushing this project to GitHub, make two folders: client and server with respective README files, and a root-level README explaining the overall architecture.
+
+
+---
+
+Would you like me to create a GitHub repo template for this or zip the code together? I can also help deploy it.
+
